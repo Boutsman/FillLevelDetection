@@ -1,6 +1,6 @@
 import imgproc
 from imgproc import *
-# Import komt van https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/image-processing/intro.html
+
 # ALTIJD EERST VOLGENDE SCRIPT TYPEN
 # WARNING: Indien error: sudo modprobe bcm2835-v4l2
 
@@ -11,7 +11,7 @@ height = 400
 
 # Instelbare hoogte, wanneer is de fles wijn genoeg gevuld
 # Dit moet in een latere versie volledig zelfstandig kunnen gebeuren
-height_wine =  185
+height_wine =  180
 
 
 # Camera en viewer openen
@@ -20,15 +20,12 @@ viewer = Viewer(width, height, "Bottlemachine")
 
 # Foto nemen en tonen via viewer
 img = camera.grabImage()
-preview = camera.grabImage()
+for x in range (0, img.width):
+	img[x, height_wine -1] = 0, 255, 0
+	img[x, height_wine] = 0, 255, 0
+	img[x, height_wine +1] = 0, 255, 0
 
-# Een blauwe lijn trekken waar het vloeistofoppervlak boven moet liggen
-for x in range (0, preview.width):
-	preview[x, height_wine -1] = 0, 0, 255
-	preview[x, height_wine] = 0, 0, 255
-	preview[x, height_wine +1] = 0, 0, 255
-
-viewer.displayImage(preview)
+viewer.displayImage(img)
 
 
 # Deze functie kan de vorm bepalen van de fles
@@ -72,33 +69,17 @@ for y in range (0, img.height):
 	# Lijst terug 0 maken, anders wordt alles opgeteld
 	countblack = 0
 
-print "Op lijn", maxIndex, "zijn de meeste zwarte pixels aanwezig."
-print "Op deze lijn bevinden zich", max, "zwarte pixels."
-
-if maxIndex < height_wine:
-	print "De fles is VOLDOENDE gevuld."
-
-	# Een groene lijn trekken van 3px dik, op het vloeistofoppverlak
-	for x in range (0, img.width):
-		img[x, maxIndex -1] = 0, 255, 0
-		img[x, maxIndex] = 0, 255, 0
-		img[x, maxIndex +1] = 0, 255, 0
-else:
-	print "De fles is ONVOLDOENDE gevuld."
-
-	# Een rode lijn trekken van 3px dik, op het vloeistofoppverlak
-	for x in range (0, img.width):
-		img[x, maxIndex -1] = 255, 0, 0
-		img[x, maxIndex] = 255, 0, 0
-		img[x, maxIndex +1] = 255, 0, 0
-
-# Een blauwe lijn trekken waar het vloeistofoppervlak boven moet liggen
+# Een rode lijn trekken door het punt waar horizontaal de meeste zwarte pixels zijn, lijn van 3px dik
 for x in range (0, img.width):
-	img[x, height_wine -1] = 0, 0, 255
-	img[x, height_wine] = 0, 0, 255
-	img[x, height_wine +1] = 0, 0, 255
+ 	img[x, maxIndex -1] = 255, 0, 0
+	img[x, maxIndex] = 255, 0, 0
+	img[x, maxIndex +1] = 255, 0, 0
+  # Een groene lijn trekken door het punt waar horizontaal de vloeistoflijn moet over zijn, lijn van 3px dik
 
 viewer.displayImage(img)
+
+print "Op deze lijn zijn de meeste zwarte pixels aanwezig:",maxIndex,"."
+print "Op deze lijn zijn er",max,"pixels aanwezig ."
 
 # Voor lang genoeg te kijken wat er is gebeurd
 waitTime(10000)
