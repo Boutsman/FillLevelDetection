@@ -27,9 +27,7 @@ def RCtime():
    #return measurement
    if measurement>5000:
       if oldVal==0:
-      	 print "Bottle detected"
-      	 time.sleep(3)
-      	 print "Take pic"
+      	 print '1'
          execfile("Bottlemachine.py")
       oldVal = 1
    else:

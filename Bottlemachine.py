@@ -30,7 +30,7 @@ for x in range (0, preview.width):
 
 viewer.displayImage(preview)
 
-
+# FUTURE TODO
 # Deze functie kan de vorm bepalen van de fles
 # If green > 150 and red > 150 and blue > 150
 

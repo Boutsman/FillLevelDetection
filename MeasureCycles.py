@@ -1,10 +1,9 @@
 import RPi.GPIO as GPIO, time 
 
+# script gebruikt om het aantal cycles te bepalen en zo de LDR te kalibreren.
 # setup function
 def setup():
-   global oldVal
    global pinNr
-   oldVal = 0
    pinNr = 4
    GPIO.setmode(GPIO.BCM)
 
@@ -24,18 +23,7 @@ def RCtime():
    while(GPIO.input(pinNr)==GPIO.LOW):
       measurement += 1
 
-   #return measurement
-   if measurement>5000:
-      if oldVal==0:
-      	 print "Bottle detected"
-      	 time.sleep(3)
-      	 print "Take pic"
-         execfile("Bottlemachine.py")
-      oldVal = 1
-   else:
-      if oldVal==1:
-         print '0'
-      oldVal = 0
+   return measurement
 
 #main function
 setup()
